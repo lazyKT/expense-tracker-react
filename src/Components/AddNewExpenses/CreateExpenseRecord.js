@@ -179,10 +179,10 @@ function CreateExpenseRecord () {
           onChange={handleOnChange} required
         >
           <option value="household">HouseHold</option>
-          <option value="food">Food</option>
-          <option value="study">Study</option>
-          <option value="work">Work</option>
-          <option value="others">Others</option>
+          <option value="Food">Food</option>
+          <option value="Study">Study</option>
+          <option value="Work">Work</option>
+          <option value="Others">Others</option>
         </select>
 
         <button style={styles.formSubmit}

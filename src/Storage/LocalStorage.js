@@ -27,7 +27,7 @@ export function writeExpenses (newExpense) {
       newExpense
     ];
     console.log(expenses);
-    // localStorage.setItem("expenses", JSON.stringify(expenses));
+    localStorage.setItem("expenses", JSON.stringify(expenses));
 
     return { error: false };
   }
