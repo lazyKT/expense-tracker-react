@@ -8,7 +8,7 @@ import expenses from "../TestData/expenses";
 export function readExpenses () {
   try {
     const expensesStr = localStorage.getItem("expenses");
-    return JSON.parse(expensesStr);
+    return expensesStr ? JSON.parse(expensesStr) : [];
   }
   catch (err) {
     if (err?.message)
@@ -21,14 +21,28 @@ export function readExpenses () {
 export function writeExpenses (newExpense) {
   try {
     let expenses = readExpenses(); // read the expenses data from localstorage
+    // if (!expenses)
     expenses = [
       ...expenses,
       newExpense
     ];
-
-    localStorage.setItem("expenses", JSON.stringify(expenses));
+    console.log(expenses);
+    // localStorage.setItem("expenses", JSON.stringify(expenses));
 
     return { error: false };
+  }
+  catch (err) {
+    if (err?.message)
+      return { error: true, message: err.message };
+    return { error: true, message: "Unknown error occured"};
+  }
+}
+
+
+/** Get All Expenses Data **/
+export function getAllExpenses () {
+  try {
+    return { error: false, data: expenses };
   }
   catch (err) {
     if (err?.message)
@@ -89,6 +103,24 @@ export function getTotalExpensesByDayAndCategory () {
           { amount : curr.amount, date: curr.date}
         ]
 
+      return prev;
+    }, {});
+
+    return { error: false, data };
+  }
+  catch (err) {
+    if (err?.message)
+      return { error: true, message: err.message };
+    return { error: true, message: "Unknown error occured"};
+  }
+}
+
+
+/** Get Total Expenses by Category **/
+export function getTotalExpensesByCategory () {
+  try {
+    const data = expenses.reduce( (prev, curr) => {
+      prev[curr.category] = (prev[curr.category] || 0) + curr.amount;
       return prev;
     }, {});
 

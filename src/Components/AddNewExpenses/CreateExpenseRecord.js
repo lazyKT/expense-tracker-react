@@ -65,7 +65,7 @@ const styles = {
 function CreateExpenseRecord () {
 
   const [ expense, setExpense ] = useState({
-    expenseDate : "",
+    date : "",
     amount: "",
     note: "",
     category: "household"
@@ -81,13 +81,32 @@ function CreateExpenseRecord () {
     });
   }
 
+
+  /** validation of expenses data before saving into local storage **/
+  const validateExpenseData = () => {
+    if (!expense.date || expense.date === "")
+      return { error: true, message: "*Invalid Date*" }
+
+    if (!expense.amount || expense.amount === "" || parseInt(expense.amount) <= 0)
+      return { error: true, message: "*Invalid Amount. Please enter numbers*"}
+
+    return { error: false }
+  }
+
+
   // handle On Click event of Add New Expense button
   const handleOnAddNewExpense = (e) => {
     try {
       e.preventDefault();
+
       setLoading(true);
 
+      const { error, message } = validateExpenseData();
+      if (error)
+        throw new Error(message);
+
       const res = writeExpenses(expense);
+
       if (res?.error) {
         // Error Saving New Expense to LocalStorage
         setMessage({
@@ -99,7 +118,7 @@ function CreateExpenseRecord () {
         // Successfully Save New Expense Data
         // reset Expenses Input
         setExpense({
-          expenseDate : "",
+          date : "",
           amount: "",
           note: "",
           category: "household"
@@ -115,7 +134,7 @@ function CreateExpenseRecord () {
       setMessage({
         type: "error",
         text: err ? err.message : "Unknown Error Occured"
-      })
+      });
     }
   }
 
@@ -139,8 +158,8 @@ function CreateExpenseRecord () {
 
         <label style={styles.formLabel}>Date</label>
         <input style={styles.formControl}
-          onChange={handleOnChange} required
-          type="date" value={expense.expenseDate} name="firstname"/>
+          onChange={handleOnChange}
+          type="date" value={expense.date} name="date" required/>
 
         <label style={styles.formLabel}>Amount</label>
         <input style={styles.formControl}
