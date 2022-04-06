@@ -29,6 +29,7 @@ function prepareData (data, days) {
 }
 
 
+// create and prepare datasets for the line chart
 function createDataSets (expenses, days, mode) {
 
   let datasets = [];
@@ -70,7 +71,7 @@ function LineChart ({expenses, days, mode="single"}) {
         datasets : createDataSets(expenses, days, mode)
       });
     }
-  }, [days, expenses]);
+  }, [days, expenses, mode]);
 
   useEffect(() => {
     setLoading(false);

@@ -2,13 +2,45 @@
  * This file contains functions to access (Read/Write) local Storage
  **/
 
-import expenses from "../TestData/expenses";
+
+/* Reformat the data fetched from local storage
+ * Since data are converted into JSON String before stored into LocalStorage,
+ * All data reterived from local storage are in string type
+ * This function does the necessary conversion like convert id back to Int, amount back to floats
+ */
+function formatData (expense) {
+  return {
+    ...expense,
+    id: parseInt(expense.id),
+    date: new Date(expense.date),
+    amount: Number(expense.amount)
+  };
+}
 
 
 export function readExpenses () {
   try {
     const expensesStr = localStorage.getItem("expenses");
-    return expensesStr ? JSON.parse(expensesStr) : [];
+    return expensesStr
+      ? JSON.parse(expensesStr).map(e => formatData(e))
+      : [];
+  }
+  catch (err) {
+    if (err?.message)
+      return { error: true, message: err.message };
+    return { error: true, message: "Unknown error occured"};
+  }
+}
+
+
+export function bulkWrite (_expenses) {
+  try {
+    const jsonStr = JSON.stringify(_expenses);
+    console.log(jsonStr);
+
+    localStorage.setItem("expenses", jsonStr);
+
+    return { error: false };
   }
   catch (err) {
     if (err?.message)
@@ -21,12 +53,17 @@ export function readExpenses () {
 export function writeExpenses (newExpense) {
   try {
     let expenses = readExpenses(); // read the expenses data from localstorage
-    // if (!expenses)
+
+    /** Get the latest expense record id and increment it by 1
+      * to generate new id
+      **/
+    const lastID = expenses.at(-1)?.id;
+
     expenses = [
       ...expenses,
-      newExpense
+      {...newExpense, id: isNaN(lastID) ? 1 : lastID + 1}
     ];
-    console.log(expenses);
+
     localStorage.setItem("expenses", JSON.stringify(expenses));
 
     return { error: false };
@@ -42,7 +79,7 @@ export function writeExpenses (newExpense) {
 /** Get All Expenses Data **/
 export function getAllExpenses () {
   try {
-    return { error: false, data: expenses };
+    return { error: false, data: readExpenses() };
   }
   catch (err) {
     if (err?.message)
@@ -55,7 +92,7 @@ export function getAllExpenses () {
 /* Get Total Expenses Used day by day */
 export function getTotalExpensesByDay () {
   try {
-    const data = expenses.reduce( (prev, curr) => {
+    const data = readExpenses().reduce( (prev, curr) => {
       const dtStr = curr.date.toLocaleDateString();
       prev[dtStr] = {
         date: curr.date,
@@ -82,7 +119,7 @@ export function getTotalExpensesByDay () {
  **/
 export function getTotalExpensesByDayAndCategory () {
   try {
-    let data = expenses.reduce( (prev, curr) => {
+    let data = readExpenses().reduce( (prev, curr) => {
 
       let isExist = false;
 
@@ -119,7 +156,7 @@ export function getTotalExpensesByDayAndCategory () {
 /** Get Total Expenses by Category **/
 export function getTotalExpensesByCategory () {
   try {
-    const data = expenses.reduce( (prev, curr) => {
+    const data = readExpenses().reduce( (prev, curr) => {
       prev[curr.category] = (prev[curr.category] || 0) + curr.amount;
       return prev;
     }, {});

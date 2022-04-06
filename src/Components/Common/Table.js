@@ -6,6 +6,8 @@
  **/
 
 import React, { useState, useEffect } from "react";
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 
 const styles = {
@@ -21,7 +23,10 @@ const styles = {
     cursor: "pointer"
   },
   td: {
-    padding: "10px"
+    padding: "10px",
+  },
+  icon: {
+    marginTop: "5px"
   }
 }
 
@@ -75,7 +80,6 @@ function Table ({columns, data}) {
   useEffect(() => {
     if (columns?.length > 0 && data) {
       setRows(data);
-
       setSortConfig({
         field: columns[0],
         order: "asc"
@@ -102,7 +106,6 @@ function Table ({columns, data}) {
        * Good Explanation about useEffect: https://overreacted.io/a-complete-guide-to-useeffect/
        **/
       const sortedRows = [...rows].sort(doSorting(sortConfig));
-      // console.log(sortedRows);
       setRows(sortedRows);
     }
   }, [sortConfig]);
@@ -114,34 +117,41 @@ function Table ({columns, data}) {
 
   return (
     <div>
-      <table style={styles.table}>
-        <thead>
-          <tr>
+      { loading ? "loading ..." : (
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              {
+                columns?.map((col, idx) =>
+                  <th onClick={() => handleSort(col)}
+                    style={styles.th} key={idx}>
+                    {col.toUpperCase()}
+                    { sortConfig.field === col ? (
+                        sortConfig.order === "asc"
+                        ? <ArrowDropDownIcon/>
+                        : <ArrowDropUpIcon/>
+                    ) : null}
+                  </th>
+                )
+              }
+            </tr>
+          </thead>
+          <tbody>
             {
-              columns?.map((col, idx) =>
-                <th onClick={() => handleSort(col)}
-                  style={styles.th} key={idx}>
-                  {col.toUpperCase()}
-                </th>
+              rows?.map( (r, idx) =>
+                <tr key={idx}>
+                  {
+                    columns?.map( (col, idx) => col === "date"
+                      ? <td style={styles.td} key={idx}>{r[col].toLocaleDateString()}</td>
+                      : <td style={styles.td} key={idx}>{r[col]}</td>
+                    )
+                  }
+                </tr>
               )
             }
-          </tr>
-        </thead>
-        <tbody>
-          {
-            rows?.map( (r, idx) =>
-              <tr key={idx}>
-                {
-                  columns?.map( (col, idx) => col === "date"
-                    ? <td style={styles.td} key={idx}>{r[col].toLocaleDateString()}</td>
-                    : <td style={styles.td} key={idx}>{r[col]}</td>
-                  )
-                }
-              </tr>
-            )
-          }
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }

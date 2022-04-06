@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Dashboard from "../Components/Dashboard/Dashboard";
 import Records from "../Components/Records/Records";
 import CreateExpenseRecord from "../Components/AddNewExpenses/CreateExpenseRecord";
-import Drawer from "../Components/Drawer";
+import Drawer from "../Components/Common/Drawer";
 
 
 const styles = {

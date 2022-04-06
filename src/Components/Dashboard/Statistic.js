@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import Modal from "../Modal";
+import Modal from "../Common/Modal";
 
 import LineChart from "../Visuals/LineChart";
+import CustomDateChooser from "../Common/CustomDateChooser";
 import VisualOptions from "./VisualOptions";
 import {
   getTotalExpensesByDayAndCategory,
@@ -46,6 +47,7 @@ function Statistic() {
   const [ endDate, setEndDate ] = useState(null);
   const [ dateRange, setDateRange ] = useState([]);
   const [ modalOpen, setModalOpen ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
 
   const init = () => {
     const date1 = new Date();
@@ -59,6 +61,7 @@ function Statistic() {
   /** Get Total Expenses Data by Days, from Local Stroage **/
   const fetchTotalExpensesByDay = () => {
     try {
+      setLoading(true);
       const res = getTotalExpensesByDay();
       if (res.error) {
         throw new Error (res.message);
@@ -76,6 +79,7 @@ function Statistic() {
   /** Get Categorized Expenses Data by Days **/
   const fetchCategorizedExpensesByDday = () => {
     try {
+      setLoading(true);
       const res = getTotalExpensesByDayAndCategory();
       if (res.error) {
         throw new Error (res.message);
@@ -90,6 +94,7 @@ function Statistic() {
   }
 
 
+  // change JS Date Object to ISO Format Date String
   const toISODateString = (dt) => dt?.toISOString().split("T")[0];
 
 
@@ -132,52 +137,50 @@ function Statistic() {
 
 
   useEffect(() => {
+    setLoading(false);
     if (startDate !== null && endDate !== null)
       setDateRange(getDates(startDate, endDate));
   }, [startDate, endDate, expenses]);
 
+
   return (
     <div style={styles.container}>
-      <h3 style={styles.header}>Statistic</h3>
-
-      <VisualOptions
-        setModalOpen={() => setModalOpen(true)}
-        handleOnClickCurrentMonth={handleOnClickCurrentMonth}
-        handleOnClickCurrentWeek={handleOnClickCurrentWeek}
-        onChangeVisualOption={val => setVisualMode(val)}
-      />
-
-      {modalOpen && (
-        <Modal>
-          <form>
-            <h5>Select Custom Date Ranges</h5>
-            <label>Start : </label>
-            <input
-              type="date"
-              onChange={(e) => setStartDate(new Date(e.target.value))}
-              value={toISODateString(startDate)}
-              name="startDate"
-            />
-            <label>End : </label>
-            <input
-              type="date"
-              onChange={(e) => setEndDate(new Date(e.target.value))}
-              value={toISODateString(endDate)}
-              name="endDate"
-            />
-            <button onClick={() => setModalOpen(false)}>Close</button>
-          </form>
-        </Modal>
-      )}
-
-      <div style={styles.filter}>
-        <h5 style={styles.filterLabel}>Start Date : {toISODateString(startDate)}</h5>
-        <h5 style={styles.filterLabel}>End Date : {toISODateString(endDate)}</h5>
-      </div>
 
       {
-        (dateRange?.length > 0) && expenses && expenses !== null &&
-        <LineChart days={dateRange} expenses={expenses} mode={visualMode}/>
+        loading ? "Loading ..." : (
+          <>
+            <h3 style={styles.header}>Statistic</h3>
+
+            <VisualOptions
+              setModalOpen={() => setModalOpen(true)}
+              handleOnClickCurrentMonth={handleOnClickCurrentMonth}
+              handleOnClickCurrentWeek={handleOnClickCurrentWeek}
+              onChangeVisualOption={val => setVisualMode(val)}
+            />
+
+            {modalOpen && (
+              <Modal>
+                <CustomDateChooser
+                  start={toISODateString(startDate)}
+                  end={toISODateString(endDate)}
+                  setEndDate={val => setEndDate(val)}
+                  setStartDate={val => setStartDate(val)}
+                  closeModal={() => setModalOpen(false)}
+                />
+              </Modal>
+            )}
+
+            <div style={styles.filter}>
+              <h5 style={styles.filterLabel}>Start Date : {toISODateString(startDate)}</h5>
+              <h5 style={styles.filterLabel}>End Date : {toISODateString(endDate)}</h5>
+            </div>
+
+            {
+              (dateRange?.length > 0) && expenses && expenses !== null &&
+              <LineChart days={dateRange} expenses={expenses} mode={visualMode}/>
+            }
+          </>
+        )
       }
 
     </div>

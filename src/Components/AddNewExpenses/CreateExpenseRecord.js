@@ -3,7 +3,7 @@
  **/
 import React, { useState, useEffect } from "react";
 
-import Message from "../Message";
+import Message from "../Common/Message";
 import { writeExpenses } from "../../Storage/LocalStorage";
 
 
@@ -126,7 +126,7 @@ function CreateExpenseRecord () {
         // inform user
         setMessage({
           type: "success",
-          text: "A new added successfully"
+          text: "A new expense added successfully"
         });
       }
     }
