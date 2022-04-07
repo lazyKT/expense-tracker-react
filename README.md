@@ -20,7 +20,8 @@ In the project directory, you can run:
 Install the necessary dependencies used in the project
 
 ## Attention
-Some of the external third parties dependencies installtion might be failed with the npm version >= 7
+If you encounter any errors like `npm dep tree cannot be resolve`, plese try one of the following methods :
+This is because of the major `npm` updates starting from version 7.
 #### Affected npm Version : >=7
 ### Solutions
 We can use one of the following three solutions for the workaround:
