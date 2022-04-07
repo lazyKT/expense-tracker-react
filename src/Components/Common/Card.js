@@ -1,5 +1,5 @@
 /**
- * Resuable Card Component
+ * Resuable Bootstrap like Card Component
  **/
 
 import React from "react";

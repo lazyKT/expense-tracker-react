@@ -30,36 +30,32 @@ function prepareData (data, days) {
 
 
 // create and prepare datasets for the line chart
-function createDataSets (expenses, days, mode) {
+function createDataSets (expenses, days) {
 
   let datasets = [];
   let i = 0;
 
-  // for single dataset (or Single-Data Line Chart)
-  if (mode === "single") {
+  for (let [key, value] of Object.entries(expenses)) {
     datasets.push ({
-      label: "Total Expenses",
-      data: prepareData(Object.values(expenses), days),
-      borderColor: "dodgerblue"
+      label: key,
+      data: prepareData(value, days),
+      borderColor: colors[i]
     });
-  }
-  // Multi Dataset (or Multi-Data Line Chart)
-  else {
-    for (let [key, value] of Object.entries(expenses)) {
-      datasets.push ({
-        label: key,
-        data: prepareData(value, days),
-        borderColor: colors[i]
-      });
-      i++;
-    }
+    i++;
   }
 
   return datasets;
 }
 
 
-function LineChart ({expenses, days, mode="single"}) {
+/**
+ * Plotting the Line Chart based on the data received from props
+ * props:
+ *  expenses  : A single object or an array of expense objects
+ *            : expenses will be a key-value pair object (key: expenseType, value: array of expense object)
+ *  Days      : Array of dates starting from specified start date to end datae
+ **/
+function LineChart ({expenses, days}) {
 
   const [ data, setData ] = useState(null);
   const [ loading, setLoading ] = useState(true);
@@ -68,10 +64,10 @@ function LineChart ({expenses, days, mode="single"}) {
     if (days && days !== null) {
       setData ({
         labels: days,
-        datasets : createDataSets(expenses, days, mode)
+        datasets : createDataSets(expenses, days)
       });
     }
-  }, [days, expenses, mode]);
+  }, [days, expenses]);
 
   useEffect(() => {
     setLoading(false);

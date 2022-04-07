@@ -1,3 +1,6 @@
+/**
+ * Top navigation bar
+ **/
 import React from "react";
 
 

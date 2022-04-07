@@ -18,6 +18,9 @@ function formatData (expense) {
 }
 
 
+/**
+ * Read the local storage and return the values as the JavaScript Array
+ **/
 export function readExpenses () {
   try {
     const expensesStr = localStorage.getItem("expenses");
@@ -33,6 +36,10 @@ export function readExpenses () {
 }
 
 
+/**
+ * Write/Save multiple expenses data into local storage.
+ * This function is used for the dummy data load
+ **/
 export function bulkWrite (_expenses) {
   try {
     const jsonStr = JSON.stringify(_expenses);
@@ -50,6 +57,9 @@ export function bulkWrite (_expenses) {
 }
 
 
+/**
+ * Write/Save new expenses data into local storage
+ **/
 export function writeExpenses (newExpense) {
   try {
     let expenses = readExpenses(); // read the expenses data from localstorage
@@ -89,10 +99,14 @@ export function getAllExpenses () {
 }
 
 
-/* Get Total Expenses Used day by day */
+/**
+ * Get Total Expenses Used day by day
+ * return value will be a key-value pair object
+ * e.g. { totalExpenses: [{amount:amount, date: date1}, {amount:amount, date: date1}] }
+ **/
 export function getTotalExpensesByDay () {
   try {
-    const data = readExpenses().reduce( (prev, curr) => {
+    let data = readExpenses().reduce( (prev, curr) => {
       const dtStr = curr.date.toLocaleDateString();
       prev[dtStr] = {
         date: curr.date,
@@ -100,6 +114,8 @@ export function getTotalExpensesByDay () {
       };
       return prev
     }, {});
+
+    data = { totalExpenses: Object.keys(data).map( key => data[key]) };
 
     return { error: false, data };
   }
@@ -116,6 +132,8 @@ export function getTotalExpensesByDay () {
  * We definitely can improve this. NEED IMPROVEMENT & REVIEW
  * This currently involves two iterations to group the total exepenses firstly by category, then daily
  * IMHO, this kind of logic should be handled at the server side.
+ * This function will return a key-value pair object
+ * e.g. { category: [{amount, date}, {amount, date}], category2: [{amount, date}]}
  **/
 export function getTotalExpensesByDayAndCategory () {
   try {

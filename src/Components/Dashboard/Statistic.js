@@ -1,3 +1,6 @@
+/**
+ * This component is responsible for filtering, customizing and plotting the chart visuals
+ **/
 import { useState, useEffect } from "react";
 import Modal from "../Common/Modal";
 
@@ -36,12 +39,17 @@ const styles = {
     padding: "10px",
     margin: "0px 10px",
     fontWeight: "600",
+  },
+  visualLabel: {
+    marginBottom: "30px",
+    textAlign: "center",
+    textDecoration: "underline"
   }
 };
 
 function Statistic() {
 
-  const [ visualMode, setVisualMode ] = useState("single");
+  const [ visualMode, setVisualMode ] = useState("multi");
   const [ expenses, setExpenses ] = useState(null);
   const [ startDate, setStartDate ] = useState(null);
   const [ endDate, setEndDate ] = useState(null);
@@ -49,6 +57,10 @@ function Statistic() {
   const [ modalOpen, setModalOpen ] = useState(false);
   const [ loading, setLoading ] = useState(true);
 
+
+  /**
+   * Initialize the default dates, and time range. The default will be the from last 7 days to current time
+   **/
   const init = () => {
     const date1 = new Date();
     date1.setDate(date1.getDate() - 7);
@@ -106,6 +118,7 @@ function Statistic() {
   };
 
 
+  /** Return the range of dates between start and end **/
   const getDates = (start, end) => {
     const dateArray = [];
     let currentDate = new Date(start);
@@ -124,7 +137,6 @@ function Statistic() {
 
   useEffect(() => {
     init(); // initialize date ranges (Default: from last 7days to current day)
-    fetchTotalExpensesByDay(); // get Expenses Data from LocalStorage
   }, []);
 
 
@@ -156,6 +168,7 @@ function Statistic() {
               handleOnClickCurrentMonth={handleOnClickCurrentMonth}
               handleOnClickCurrentWeek={handleOnClickCurrentWeek}
               onChangeVisualOption={val => setVisualMode(val)}
+              visualMode={visualMode}
             />
 
             {modalOpen && (
@@ -181,6 +194,12 @@ function Statistic() {
             }
           </>
         )
+      }
+
+      {
+        visualMode === "single"
+          ? <h5 style={styles.visualLabel}>Daily trends of total expenses</h5>
+          : <h5 style={styles.visualLabel}>Daily trends of total Expenses, cateogrized by expenses type</h5>
       }
 
     </div>

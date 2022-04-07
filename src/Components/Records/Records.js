@@ -24,10 +24,11 @@ const styles = {
 };
 
 
+// columns (or keys) for the table
 const columns = [ "id", "category", "amount", "note", "date" ];
 
 
-function ExpenseOverview () {
+function Records () {
 
   const [ expenses, setExpenses ] = useState([]);
 
@@ -64,4 +65,4 @@ function ExpenseOverview () {
 }
 
 
-export default ExpenseOverview;
+export default Records;

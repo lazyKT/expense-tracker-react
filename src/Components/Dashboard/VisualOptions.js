@@ -43,7 +43,8 @@ function VisualOptions ({
   setModalOpen,
   handleOnClickCurrentMonth,
   handleOnClickCurrentWeek,
-  onChangeVisualOption
+  onChangeVisualOption,
+  visualMode
 }) {
 
   // determine whether to show single data or multiple data on chart
@@ -54,6 +55,10 @@ function VisualOptions ({
     setVisualType(e.target.name);
     onChangeVisualOption(e.target.name);
   }
+
+  useEffect (() => {
+    setVisualType(visualMode);
+  }, [visualMode, setModalOpen, handleOnClickCurrentWeek, handleOnClickCurrentMonth]);
 
 
   return (

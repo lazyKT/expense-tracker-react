@@ -1,3 +1,6 @@
+/**
+ * Side Navigation Pannel
+ **/
 import React, { useState, useEffect } from "react";
 
 
