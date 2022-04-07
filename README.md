@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - material-ui/icons
 
 ## Installation
-- Kindly clone this repo by `git clone `
+- Kindly clone this repo by `git clone https://github.com/lazyKT/expense-tracker-react.git`
 - cd to the expense-tracker-react `cd expense-tracket-react` then please do the followings
 
 ## Available Scripts
